@@ -1,0 +1,24 @@
+{
+  "name": "cypheir-color-scheme",
+  "version": "0.0.1",
+  "description": "An npm package project that help in the generation of color variants and schemes for projects.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup"
+  },
+  "keywords": [
+    "typescript",
+    "color",
+    "color scheme generator",
+    "react",
+    "nextjs"
+  ],
+  "author": "Anuoluwa S. Adebayo (Unnamed)",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.3"
+  }
+}
