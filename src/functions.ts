@@ -430,3 +430,16 @@ export function analogous(colour: RGB, offset: number = 0): RGB {
 
   return hslToRGB(adjHSL);
 }
+
+
+/*
+  ANALOGUE SCHEME BLUEPRINT
+
+  Algortihm:
+  - Convert the colour to HSL
+  - Gets colour adjacent to the base colour
+  - Convert it to RGB
+
+*/
+
+///////////////////////////////////////////////
