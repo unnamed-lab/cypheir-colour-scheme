@@ -7,9 +7,9 @@ ALGORITHM
 - Convert the colour into hexadecimals or decimals. [Done]
 - Calculate angles in the colour wheel. [Done]
 - Find colour schemes for:
-    - Monochromatics
-    - Complementary
-    - Analogus
+    - Monochromatics [Done]
+    - Complementary [Done]
+    - Analogous [Done]
     - Tradic
     - Tetradic
 - Output the results in an object
@@ -219,38 +219,33 @@ export function hslToRGB(hsl: HSL): RGB {
   const { hue, saturation, lightness } = hsl;
   const [h, s, l] = [hue, saturation, lightness];
 
-  const c = (1 - Math.abs(2 * l - 1)) * s;
-  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-  const m = l - c / 2;
-
   let r, g, b;
 
-  if (h >= 0 && h < 60) {
-    r = c;
-    g = x;
-    b = 0;
-  } else if (h >= 60 && h < 120) {
-    r = x;
-    g = c;
-    b = 0;
-  } else if (h >= 120 && h < 180) {
-    r = 0;
-    g = c;
-    b = x;
-  } else if (h >= 180 && h < 240) {
-    r = 0;
-    g = x;
-    b = c;
+  if (s === 0) {
+    r = g = b = l; // Achromatic
   } else {
-    r = c;
-    g = 0;
-    b = x;
+    const mHueToRGB = (p: number, q: number, t: number) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+
+    r = mHueToRGB(p, q, h / 360 + 1 / 3);
+
+    g = mHueToRGB(p, q, h / 360);
+    b = mHueToRGB(p, q, h / 360 - 1 / 3);
   }
 
   const output: RGB = {
-    red: Math.round((r + m) * 255),
-    green: Math.round((g + m) * 255),
-    blue: Math.round((b + m) * 255),
+    red: Math.round(r * 255),
+    green: Math.round(g * 255),
+    blue: Math.round(b * 255),
   };
   return output;
 }
@@ -325,7 +320,7 @@ export function monochrome(
 
 /**
  * Finds the complimentary colours of the input colour.
- * @param {RGB} colour - the RGB colour.
+ * @param {RGB} colour - Get the RGB colour.
  * @param {number | Array<number>} variation - 1 = 180deg, 2 = [150deg, 210deg], [number] = [90, 120, 270].
  * @param {boolean} toHex - to convert the output to HEX.
  * @returns {RGB | Array<number>} The RGB values of the complimentary colours.
@@ -431,15 +426,57 @@ export function analogous(colour: RGB, offset: number = 0): RGB {
   return hslToRGB(adjHSL);
 }
 
-
 /*
-  ANALOGUE SCHEME BLUEPRINT
+  TRIADIC SCHEME BLUEPRINT
 
   Algortihm:
   - Convert the colour to HSL
-  - Gets colour adjacent to the base colour
+  - Gets 120deg and 240deg colour from the base colour
   - Convert it to RGB
 
 */
 
 ///////////////////////////////////////////////
+
+/**
+ * Get the Triadic value of the base colour.
+ * @param {RGB} colour: Get the RGB colour
+ * @param {number | [number, number]} offset: Set offeset between the two triadic angled colours.
+ * @param {boolean} toHex: to convert the output to HEX.
+ * @returns Returns a string or RGB object array of the triadic colours.
+ */
+export function triadic(
+  colour: RGB,
+  offset: number | [number, number] = 0,
+  toHex: boolean = true
+) {
+  const hsl = rgbToHSL(colour);
+  const angle = [120, 240];
+
+  if (typeof offset === "number") {
+    const output: Array<RGB | string> = angle.map((el, index) => {
+      const cHue = (hsl.hue + (el + offset)) % 360;
+      const nHSL = hslToRGB({
+        hue: cHue,
+        saturation: hsl.saturation,
+        lightness: hsl.lightness,
+      });
+
+      return toHex ? rgbToHex(nHSL) : nHSL;
+    });
+    return output;
+  } else {
+    const output: Array<RGB | string> = angle.map((el, index) => {
+      const sign = index === 0 ? offset[0] : offset[1];
+      const cHue = (hsl.hue + (el + sign)) % 360;
+      const nHSL = hslToRGB({
+        hue: cHue,
+        saturation: hsl.saturation,
+        lightness: hsl.lightness,
+      });
+
+      return toHex ? rgbToHex(nHSL) : nHSL;
+    });
+    return output;
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "cypheir-color-scheme",
-  "version": "0.2.2",
+  "version": "0.3.1",
   "description": "An npm package project that help in the generation of color variants and schemes for projects.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

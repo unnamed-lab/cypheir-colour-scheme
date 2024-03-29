@@ -7,6 +7,7 @@ import {
   monochrome,
   rgbToHex,
   rgbToHSL,
+  triadic,
 } from "./functions";
 import { RGB } from "./interfaces";
 import { ColourInput } from "./types";
@@ -80,5 +81,15 @@ export class ColourScheme {
    */
   getAnalogous(offset: number = 0) {
     return analogous(hexToRGB(this.colourHex), offset);
+  }
+
+  /**
+   * Get the Triadic colour scheme of the base colour.
+   * @param {number | [number, number]} offset: Set offeset between the two triadic angled colours.
+   * @param {boolean} toHex: to convert the output to HEX.
+   * @returns Returns a string or RGB object array of the triadic colours.
+   */
+  getTradic(offset: number | [number, number] = 0, toHex: boolean = true) {
+    return triadic(hexToRGB(this.colourHex), offset, toHex);
   }
 }
