@@ -15,9 +15,12 @@ ALGORITHM
 - Output the results in an object
 */
 
-/*
-  @title: Get Colour Code Input.
-  @desc: To get the string or object(RGB) input from the user.
+/** 
+  * @title: Get Colour Code Input.
+  * @desc: To get the string or object(RGB) input from the user.
+  * @param {ColourInput} colour: Gets either a HEX string input or a RGB object data type.
+  * @returns {string}: Returns a HEX string.
+
 */
 export function getColour(colour: ColourInput): string | never {
   let colourCode: string;
@@ -41,17 +44,19 @@ export function getColour(colour: ColourInput): string | never {
     ) {
       throw new Error("Invalid RGB value inputted.");
     }
-    const hexCode: string = objectToHex(colour);
+    const hexCode: string = rgbToHex(colour);
     colourCode = hexCode.toLowerCase();
   }
   return colourCode;
 }
 
-/*
-  @title: Convert RGB to HEX.
-  @desc: To convert the inputted RGB object into hexadecimal.  Adding zeros to one digit RGB properties.
-*/
-export function objectToHex(code: RGB): string {
+/**
+ * @title: Convert RGB to HEX.
+ * @desc: To convert the inputted RGB object into hexadecimal.  Adding zeros to one digit RGB properties.
+ * @param {RGB} code: Gets a RGB object {red: x, green: y, blue: z}.
+ * @returns {string}: Returns a HEX string.
+ */
+export function rgbToHex(code: RGB): string {
   let { red, green, blue } = code;
   const redHex = red.toString(16);
   const greenHex = green.toString(16);
@@ -61,11 +66,13 @@ export function objectToHex(code: RGB): string {
   }${blueHex.length === 1 ? "0" + blueHex : blueHex}`;
 }
 
-/*
-  @title: Convert RGB to HEX.
-  @desc: To convert the inputted RGB object into hexadecimal.  Adding zeros to one digit RGB properties.
-*/
-export function hexToObject(code: string | undefined): RGB | never {
+/**
+ * @title: Convert RGB to HEX.
+ * @desc: To convert the inputted RGB object into hexadecimal. Adding zeros to one digit RGB properties.
+ * @param {string} code: Gets a HEX string.
+ * @returns {RGB}: Returns a RGB object {red: x, green: y, blue: z}.
+ */
+export function hexToRGB(code: string | undefined): RGB | never {
   if (typeof code === "undefined") {
     throw new Error("Invalid code");
   }
@@ -121,7 +128,7 @@ export function hexToDec(code: string | undefined): never | number {
   throw new Error("Invalid code");
 }
 
-/*
+/** 
   @title: Converts decimal inputs to hexadecimal values.
   @desc: Converts the decimal inputs into hexadecimal values.
 */
@@ -129,7 +136,7 @@ function decToHex(value: number): string {
   return value.toString(16);
 }
 
-/*
+/**
   @title: Evaluate the inputted angle.
   @desc: Handles the angle input, converting overflow back into the 360deg range.
 */
@@ -140,7 +147,7 @@ function angleReading(angle: number): number {
   return output;
 }
 
-/*
+/**
   @title: Generates colour equivalent based on angle.
   @desc: Mathematically solve for the equivalent colour of the inputted HEX.
 */
@@ -158,6 +165,11 @@ export function colourEquivAngle(hexCode: string, angle: number): string {
   return decToHex(hexNum);
 }
 
+/**
+ * Converts RGB object to HSL.
+ * @param {RGB} rgb - THe RGB object {red: x, green: y, blue: z}
+ * @returns {HSL} Outputs a HSL object.
+ */
 export function rgbToHSL(rgb: RGB): HSL {
   const valMAX: 255 = 255;
   let { red, green, blue } = rgb;
@@ -198,6 +210,11 @@ export function rgbToHSL(rgb: RGB): HSL {
   return { hue: h, saturation: s, lightness: l };
 }
 
+/**
+ * Converts HSL object to RGB.
+ * @param {HSL} hsl - THe HSL object {hue: x, saturation: y, lightness: z}
+ * @returns {RGB} Outputs a RGB object.
+ */
 export function hslToRGB(hsl: HSL): RGB {
   const { hue, saturation, lightness } = hsl;
   const [h, s, l] = [hue, saturation, lightness];
@@ -249,8 +266,19 @@ export function hslToRGB(hsl: HSL): RGB {
 
 */
 
-export function monochrome(code: string | undefined, steps: number = 10) {
-  const RGB: RGB = hexToObject(code);
+///////////////////////////////////////////////
+
+/**
+ * Generates an array of the monochromatics of the base colour.
+ * @param {string} code - The HEX code of the base colour.
+ * @param {number} steps - The iteration steps.
+ * @returns {RGB} Output an array of the base colour monochrome.
+ */
+export function monochrome(
+  code: string | undefined,
+  steps: number = 10
+): Array<RGB> {
+  const RGB: RGB = hexToRGB(code);
   const rgbObj = Object.entries(RGB);
   let MAX = { name: "", value: 0 };
   rgbObj.forEach(([key, value]) => {
@@ -293,19 +321,20 @@ export function monochrome(code: string | undefined, steps: number = 10) {
 
 */
 
+///////////////////////////////////////////////
+
+/**
+ * Finds the complimentary colours of the input colour.
+ * @param {RGB} colour - the RGB colour.
+ * @param {number | Array<number>} variation - 1 = 180deg, 2 = [150deg, 210deg], [number] = [90, 120, 270].
+ * @param {boolean} toHex - to convert the output to HEX.
+ * @returns {RGB | Array<number>} The RGB values of the complimentary colours.
+ */
 export function complimentary(
   colour: RGB,
   variation: 1 | 2 | Array<number> = 1,
   toHex: boolean = true
 ): RGB | string | Array<RGB | string> {
-  /**
-   * Finds the complimentary colours of the input colour.
-   * @param {RGB} colour - the RGB colour.
-   * @param {number} varation - 1 = 180deg, 2 = [150deg, 210deg], [number] = [90, 120, 270].
-   * @param {boolean} toHex - to convert the output to HEX.
-   * @returns {RGB | Array<number>} The RGB values of the complimentary colours
-   */
-
   const hsl = rgbToHSL(colour);
   let complimentHue;
   let angle;
@@ -315,7 +344,7 @@ export function complimentary(
     complimentHue = (hsl.hue + angle) % 360;
 
     return toHex
-      ? objectToHex(
+      ? rgbToHex(
           hslToRGB({
             hue: complimentHue,
             saturation: hsl.saturation,
@@ -332,7 +361,7 @@ export function complimentary(
     const output: Array<RGB | string> = angle.map((el) => {
       const complimentArrHue = (hsl.hue + el) % 360;
       return toHex
-        ? objectToHex(
+        ? rgbToHex(
             hslToRGB({
               hue: complimentArrHue,
               saturation: hsl.saturation,
@@ -351,7 +380,7 @@ export function complimentary(
     const output: Array<RGB | string> = angle.map((el) => {
       const complimentArrHue = (hsl.hue + el) % 360;
       return toHex
-        ? objectToHex(
+        ? rgbToHex(
             hslToRGB({
               hue: complimentArrHue,
               saturation: hsl.saturation,

@@ -2,11 +2,10 @@ import {
   colourEquivAngle,
   complimentary,
   getColour,
-  hexToDec,
-  hexToObject,
+  hexToRGB,
   hslToRGB,
   monochrome,
-  objectToHex,
+  rgbToHex,
   rgbToHSL,
 } from "./functions";
 import { RGB } from "./interfaces";
@@ -33,14 +32,14 @@ export class ColourScheme {
   }
 
   getRGB() {
-    return hexToObject(this.colourHex);
+    return hexToRGB(this.colourHex);
   }
 
   getMonochrome(): Array<string> {
     const monoArr: Array<RGB> = monochrome(this.colourHex);
 
     const hexArr = monoArr.map((el: RGB): string => {
-      return objectToHex(el);
+      return rgbToHex(el);
     });
     return hexArr.filter((el, index) => {
       return index === 0 || el !== hexArr[index - 1];
@@ -48,14 +47,14 @@ export class ColourScheme {
   }
 
   getHSL() {
-    return rgbToHSL(hexToObject(this.colourHex));
+    return rgbToHSL(hexToRGB(this.colourHex));
   }
 
   convertHSLToRGB() {
-    return hslToRGB(rgbToHSL(hexToObject(this.colourHex)));
+    return hslToRGB(rgbToHSL(hexToRGB(this.colourHex)));
   }
 
   getCompliments(variation: 1 | 2 | Array<number>, toHex: boolean = true) {
-      return complimentary(hexToObject(this.colourHex), variation, toHex);
+    return complimentary(hexToRGB(this.colourHex), variation, toHex);
   }
 }
