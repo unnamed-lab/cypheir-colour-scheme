@@ -10,8 +10,8 @@ ALGORITHM
     - Monochromatics [Done]
     - Complementary [Done]
     - Analogous [Done]
-    - Tradic
-    - Tetradic
+    - Tradic [Done]
+    - Tetradic [Done]
 - Output the results in an object
 */
 
@@ -479,4 +479,45 @@ export function triadic(
     });
     return output;
   }
+}
+
+
+/*
+  TETRADIC SCHEME BLUEPRINT
+
+  Algortihm:
+  - Convert the colour to HSL
+  - Gets 60deg, 180deg and 240deg colour from the base colour
+  - Convert it to RGB
+
+*/
+
+///////////////////////////////////////////////
+
+/**
+ * Get the Tetradic value of the base colour.
+ * @param {RGB} colour: Get the RGB colour
+ * @param {number} offset: Set offeset between the two triadic angled colours.
+ * @param {boolean} toHex: to convert the output to HEX.
+ * @returns Returns a string or RGB object array of the triadic colours.
+ */
+export function tetradic(
+  colour: RGB,
+  offset: number  = 0,
+  toHex: boolean = true
+) {
+  const hsl = rgbToHSL(colour);
+  const angle = [60, 180, 240];
+
+  const output: Array<RGB | string> = angle.map((el, index) => {
+    const cHue = (hsl.hue + (el + offset)) % 360;
+    const nHSL = hslToRGB({
+      hue: cHue,
+      saturation: hsl.saturation,
+      lightness: hsl.lightness,
+    });
+
+    return toHex ? rgbToHex(nHSL) : nHSL;
+  });
+  return output;
 }
