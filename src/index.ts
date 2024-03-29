@@ -11,6 +11,9 @@ import {
 import { RGB } from "./interfaces";
 import { ColourInput } from "./types";
 
+/**
+ * Create a class to store your colour scheme and generate preferences.
+ */
 export class ColourScheme {
   protected colourCode: ColourInput;
   colourHex: string | undefined; // get the procssed hex value
