@@ -1,4 +1,5 @@
 import {
+  analogous,
   colourEquivAngle,
   complimentary,
   getColour,
@@ -56,5 +57,9 @@ export class ColourScheme {
 
   getCompliments(variation: 1 | 2 | Array<number>, toHex: boolean = true) {
     return complimentary(hexToRGB(this.colourHex), variation, toHex);
+  }
+
+  getAnalogous(offset: number = 0) {
+    return analogous(hexToRGB(this.colourHex), offset);
   }
 }

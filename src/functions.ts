@@ -167,7 +167,7 @@ export function colourEquivAngle(hexCode: string, angle: number): string {
 
 /**
  * Converts RGB object to HSL.
- * @param {RGB} rgb - THe RGB object {red: x, green: y, blue: z}
+ * @param {RGB} rgb - The RGB object {red: x, green: y, blue: z}.
  * @returns {HSL} Outputs a HSL object.
  */
 export function rgbToHSL(rgb: RGB): HSL {
@@ -395,4 +395,38 @@ export function complimentary(
     });
     return output;
   }
+}
+
+/*
+  ANALOGUE SCHEME BLUEPRINT
+
+  Algortihm:
+  - Convert the colour to HSL
+  - Gets colour adjacent to the base colour
+  - Convert it to RGB
+
+*/
+
+///////////////////////////////////////////////
+
+/**
+ * Gets the Analogous colour scheme.
+ * @param {RGB} colour: Takes a RGB object {red: x, green: y, blue: z}.
+ * @param {number} offset : Takes a number ranging from 0 to 90 to create an offset in the colour schem adjacent angle.
+ * @returns Return a RGB object {red: x, green: y, blue: z}.
+ */
+export function analogous(colour: RGB, offset: number = 0): RGB {
+  const hsl = rgbToHSL(colour);
+  const h = hsl.hue;
+  const limOffset = Math.min(Math.max(offset, 0), 90);
+
+  let adjacent = (180 - (h + limOffset) + 360) % 360;
+
+  const adjHSL: HSL = {
+    hue: adjacent,
+    saturation: hsl.saturation,
+    lightness: hsl.lightness,
+  };
+
+  return hslToRGB(adjHSL);
 }
