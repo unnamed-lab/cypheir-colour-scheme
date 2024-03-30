@@ -19,7 +19,7 @@ npm install cypheir-color-scheme
 ## Usage
 
 ```javascript
-const ColourScheme = require("cypheir-color-scheme");
+const { ColourScheme } = require("cypheir-color-scheme");
 
 // Example usage
 const color = new ColourScheme("#009cff");

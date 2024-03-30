@@ -10,3 +10,9 @@ export interface HSL {
   saturation: number;
   lightness: number;
 }
+
+// export interface pALPHA {
+//   primary: string | RGB;
+//   secondary: string | RGB;
+//   accent: string | RGB;
+// }

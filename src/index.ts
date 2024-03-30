@@ -1,6 +1,5 @@
 import {
   analogous,
-  colourEquivAngle,
   complimentary,
   getColour,
   hexToDec,
@@ -13,12 +12,18 @@ import {
   triadic,
 } from "./functions";
 import { HSL, RGB } from "./interfaces";
+import {
+  buildPaletteAlpha,
+  buildPaletteBeta,
+  buildPaletteGamma,
+  generateRandomColour,
+} from "./palette";
 import { ColourInput } from "./types";
 
 /**
  * Create a class to store your colour scheme and generate preferences.
  */
-export default class ColourScheme {
+export class ColourScheme {
   protected colourCode: ColourInput;
   colourHex: string | undefined; // get the procssed hex value
 
@@ -129,3 +134,38 @@ export default class ColourScheme {
     };
   }
 }
+
+export class ColourPalette {
+  private colourCode: ColourInput | undefined;
+
+  constructor(colourCode?: ColourInput) {
+    if (typeof colourCode === "undefined" && this.colourCode === undefined) {
+      this.colourCode = generateRandomColour();
+    }
+    if (typeof colourCode !== "undefined")
+      this.colourCode = getColour(colourCode);
+  }
+
+  showColour() {
+    return this.colourCode;
+  }
+
+  paletteAplha() {
+    if (typeof this.colourCode !== "undefined")
+      return buildPaletteAlpha(this.colourCode);
+    throw new Error("Invalid colour!");
+  }
+
+  paletteBeta() {
+    if (typeof this.colourCode !== "undefined")
+      return buildPaletteBeta(this.colourCode);
+    throw new Error("Invalid colour!");
+  }
+  paletteGamma() {
+    if (typeof this.colourCode !== "undefined")
+      return buildPaletteGamma(this.colourCode);
+    throw new Error("Invalid colour!");
+  }
+}
+
+export default { ColourScheme, ColourPalette };

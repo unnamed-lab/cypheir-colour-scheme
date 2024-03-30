@@ -138,7 +138,7 @@ export function hexToDec(code: string | undefined): never | number {
   @title: Converts decimal inputs to hexadecimal values.
   @desc: Converts the decimal inputs into hexadecimal values.
 */
-function decToHex(value: number): string {
+export function decToHex(value: number): string {
   return value.toString(16);
 }
 
