@@ -1,0 +1,11 @@
+# Directories
+src
+test
+node_modules
+
+# Files
+.env
+.DS_Store
+
+tsconfig.json
+tsup.config.ts

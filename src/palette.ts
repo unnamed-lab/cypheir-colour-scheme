@@ -22,7 +22,7 @@ import {
   rgbToHex,
   triadic,
 } from "./functions";
-import { RGB, pALPHA } from "./interfaces";
+import { RGB } from "./interfaces";
 import { ColourInput } from "./types";
 
 function generateRandomColour() {
