@@ -122,7 +122,13 @@ function getDigitsHex(code: string, hasTag: boolean = true): string | never {
 */
 export function hexToDec(code: string | undefined): never | number {
   if (typeof code === "string") {
-    const decVal = parseInt(code, 16); // Convert hexadecimal to decimal
+    let hexCode: string;
+    if (code[0] === "#") {
+      hexCode = getDigitsHex(code);
+    } else {
+      hexCode = getDigitsHex(code, false);
+    }
+    const decVal = parseInt(hexCode, 16); // Convert hexadecimal to decimal
     return decVal;
   }
   throw new Error("Invalid code");
