@@ -18,7 +18,7 @@ import { ColourInput } from "./types";
 /**
  * Create a class to store your colour scheme and generate preferences.
  */
-export class ColourScheme {
+export default class ColourScheme {
   protected colourCode: ColourInput;
   colourHex: string | undefined; // get the procssed hex value
 
@@ -98,9 +98,9 @@ export class ColourScheme {
 
   /**
    * Get the Tetradic colour scheme of the base colour.
-   * @param {number} offset: Set offeset between the two triadic angled colours.
+   * @param {number} offset: Set offeset between the two tetradic angled colours.
    * @param {boolean} toHex: to convert the output to HEX.
-   * @returns Returns a string or RGB object array of the triadic colours.
+   * @returns Returns a string or RGB object array of the tetradic colours.
    */
   Tetradic(offset: number = 0, toHex: boolean = true) {
     return tetradic(hexToRGB(this.colourHex), offset, toHex);

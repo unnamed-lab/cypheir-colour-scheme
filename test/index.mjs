@@ -1,4 +1,4 @@
-import { ColourScheme } from "../dist/index.mjs";
+import ColourScheme from "../dist/index.mjs";
 
 const color = new ColourScheme("009cff");
 
