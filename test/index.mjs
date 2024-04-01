@@ -1,6 +1,7 @@
-import { ColourScheme, ColourPalette } from "../dist/index.mjs";
+import { ColourScheme, ColourPalette, ColourLookup } from "../dist/index.mjs";
 
-const color = new ColourScheme("#a759c2");
+
+// const color = new ColourScheme("#a759c2");
 // const color = new ColourScheme("#000cff");
 // const color = new ColourScheme("#3fe22e");
 
@@ -11,10 +12,9 @@ const color = new ColourScheme("#a759c2");
 // console.log(color.getRGB());
 // console.log(color._in_.hexToDec("fd2346"));
 // console.log(color.Monochrome());
-console.log(color.Greyscale());
+// console.log(color.Greyscale());
 
-const palette = new ColourPalette();
-// console.log(palette.showColour());
+// const palette = new ColourPalette();
 // console.log(palette.showColour());
 // console.log(palette.paletteAplha());
 // console.log(palette.paletteBeta());
@@ -22,3 +22,7 @@ const palette = new ColourPalette();
 // console.log(palette.paletteProAlpha());
 // console.log(palette.paletteProBeta());
 // console.log(palette.paletteProMix());
+
+const colourSearch = ColourLookup("#1ca7ec", true);
+console.log(colourSearch.name())
+// console.log(colourSearch.name());

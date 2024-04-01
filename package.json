@@ -1,20 +1,22 @@
 {
   "name": "cypheir-color-scheme",
-  "version": "0.5.3",
+  "version": "0.6.5",
   "description": "An npm package project that help in the generation of color variants and schemes for projects.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsup",
-    "version": "npx changeset && npx changeset version",
+    "version": "npm run build && npx changeset && npx changeset version",
     "release": "npm run build && changeset publish",
-    "lint": "tsc"
+    "lint": "tsc",
+    "test": "node --es-module-specifier-resolution=node --no-warnings test/index.mjs"
   },
   "keywords": [
     "cypheir",
     "typescript",
     "color",
+    "colors",
     "colour",
     "palette",
     "color scheme generator",
@@ -27,5 +29,10 @@
     "@changesets/cli": "^2.27.1",
     "tsup": "^8.0.2",
     "typescript": "^5.4.3"
+  },
+  "dependencies": {
+    "@types/nearest-color": "^0.4.1",
+    "color-name-list": "^10.20.2",
+    "nearest-color": "^0.4.4"
   }
 }

@@ -1,4 +1,4 @@
-import { HSL, RGB } from "./interfaces";
+import { CMYK, HSL, RGB } from "./interfaces";
 import { ColourInput } from "./types";
 
 /* 
@@ -255,6 +255,51 @@ export function hslToRGB(hsl: HSL): RGB {
     blue: Math.round(b * 255),
   };
   return output;
+}
+
+export function rgbToCMYK(rgb: RGB): CMYK {
+  let [r, g, b] = [rgb.red, rgb.green, rgb.blue];
+  //  Ensure that the values are within the range of [0, 255]
+  r = Math.max(0, Math.min(255, r));
+  g = Math.max(0, Math.min(255, g));
+  b = Math.max(0, Math.min(255, b));
+
+  //  Normalize RGB values to range between [0, 1]
+  const R = r / 255;
+  const G = g / 255;
+  const B = b / 255;
+
+  //  Find the maximum value of R, G, B
+  const maxRGB = Math.max(R, G, B);
+
+  //  Calculate K (Black Key) value
+  const K = 1 - maxRGB;
+
+  // Avoid division by zero
+  if (K === 1) return { c: 0, m: 0, y: 0, k: 1 };
+
+  //  Calculate the CMY values
+  const C = (1 - R - K) / (1 - K);
+  const M = (1 - G - K) / (1 - K);
+  const Y = (1 - B - K) / (1 - K);
+
+  //  Return the CMYK values
+  return { c: C, m: M, y: Y, k: K };
+}
+
+export function cmykToRGB(cmyk: CMYK): RGB {
+  let [c, m, y, k] = [cmyk.c, cmyk.m, cmyk.y, cmyk.k];
+
+  c = Math.max(0, Math.min(1, c));
+  m = Math.max(0, Math.min(1, m));
+  y = Math.max(0, Math.min(1, y));
+  k = Math.max(0, Math.min(1, k));
+
+  const r = 255 * (1 - c) * (1 - k);
+  const g = 255 * (1 - m) * (1 - k);
+  const b = 255 * (1 - y) * (1 - k);
+
+  return { red: r, green: g, blue: b };
 }
 
 export function sortByHue(array: Array<RGB | HSL>) {

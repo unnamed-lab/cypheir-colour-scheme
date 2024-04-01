@@ -11,8 +11,15 @@ export interface HSL {
   lightness: number;
 }
 
-// export interface pALPHA {
-//   primary: string | RGB;
-//   secondary: string | RGB;
-//   accent: string | RGB;
-// }
+export interface CMYK {
+  c: number;
+  m: number;
+  y: number;
+  k: number;
+}
+
+export interface ColourLookup {
+  name: string;
+  alt: string;
+  dist: number;
+}

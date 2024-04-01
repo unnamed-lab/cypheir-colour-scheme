@@ -4,7 +4,7 @@
 
 ## Description
 
-The **Cypheir Colour Scheme** is a meticulously crafted colour palette designed for use in projects involving colour mixing, coombination and psychology.
+The **Cypheir Colour Scheme** is a meticulously crafted colour palette designed for use in projects involving colour mixing, combination and psychology.
 
 Consider the psychological impact of each colour. How does it make people feel? Use this knowledge strategically in branding, user interfaces, and visual communication.
 
@@ -18,6 +18,8 @@ npm install cypheir-color-scheme
 
 ## Usage
 
+_Colour Scheme_
+
 ```javascript
 const { ColourScheme } = require("cypheir-color-scheme");
 
@@ -26,19 +28,55 @@ const color = new ColourScheme("#009cff");
 console.log(color.Monochrome());
 ```
 
+_Colour Palette (\*work in progress)_
+
+```javascript
+const { ColourPalette } = require("cypheir-color-scheme");
+
+// Example usage
+const palette = new ColourPalette();
+console.log(palette.showColour());
+console.log(palette.paletteAplha());
+```
+
+_Colour Name Finder_
+
+```javascript
+const { ColourLookup } = require("cypheir-color-scheme");
+
+// Example usage
+const colourSearch = ColourLookup("#1ca7ec");
+console.log(colourSearch); //  Huelveño Horizon*
+```
+
 ## Features
 
 - HSL to RGB Converter
 - RGB to HSL Converter
 - HEX to RGB Converter
 - RGB to HEX Converter
+- RGB to CMYK Converter
+- CMYK to HEX Converter
 - Monochrome Generator
 - Complimentary Colour Scheme
 - Analogous Colour Scheme
 - Tradic Colour Scheme
 - Tetradic Colour Scheme
+- Colour Name Finder
+
+
 
 ## API Reference
+
+```typescript
+ColourLookup(colour) :string
+```
+
+A callback function that looks up the name of the inputted colour.
+
+Returns the name (or alternative name) of the inputted colour.
+
+_Note:_ Any name that gets attached with an asterisk(\*) is an alternative name and not the exact colour name.
 
 ```typescript
 Monochrome() :Array<string>
@@ -95,6 +133,16 @@ Returns a string or RGB object array of the tetradic colours.
 
 Contributions are welcome! If you'd like to improve the color scheme or add support for additional languages, feel free to submit a pull request.
 
+### Special Thanks
+
+We would love to give a special shout out and thanks to the creators of the following dependecies, for their hardwork helped in the build of the package.
+
+- tsup
+- typescript
+- color-name-list
+- nearest-color
+- @changesets/cli
+
 ## License
 
 This project is licensed under the [MIT License](https://github.com/unnamed-lab/cypheir-colour-scheme/blob/main/LICENSE).
@@ -127,8 +175,7 @@ clean: true,
 /_ Visit https://aka.ms/tsconfig to read more about this file _/
 
     /* Language and Environment */
-    "target": "ES2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    // "lib": [],
+    "target": "ES2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */, 
 
     /* Modules */
     "module": "CommonJS" /* Specify what module code is generated. */,
