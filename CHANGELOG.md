@@ -1,5 +1,11 @@
 # cypheir-color-scheme
 
+## 0.5.3
+
+### Patch Changes
+
+- Greyscale function (previous Monochrome algo)
+
 ## 0.5.2
 
 ### Patch Changes

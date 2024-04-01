@@ -11,6 +11,7 @@ const color = new ColourScheme("#a759c2");
 // console.log(color.getRGB());
 // console.log(color._in_.hexToDec("fd2346"));
 // console.log(color.Monochrome());
+console.log(color.Greyscale());
 
 const palette = new ColourPalette();
 // console.log(palette.showColour());

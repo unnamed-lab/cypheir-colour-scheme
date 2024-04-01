@@ -404,6 +404,56 @@ export function monochrome(code: string | undefined, steps: number = 10) {
   return palette;
 }
 
+/**
+ * Generates an array of the base colour to grayscale shades.
+ * @param {string} code - The HEX code of the base colour.
+ * @param {number} steps - The iteration steps.
+ * @returns {RGB} Output an array of the base colour monochrome.
+ */
+export function grayscale(
+  code: string | undefined,
+  steps: number = 10
+): Array<string> {
+  const RGB: RGB = hexToRGB(code);
+  const rgbObj = Object.entries(RGB);
+  let MAX = { name: "", value: 0 };
+  rgbObj.forEach(([key, value]) => {
+    if (MAX.value < value) {
+      MAX.name = key;
+      MAX.value = value;
+    }
+  });
+
+  const objSet = new Set<RGB>();
+
+  for (let i = 10; i >= 1; i--) {
+    const pIncrement = Math.ceil((((10 - i) * steps) / 100) * MAX.value);
+    let obj: RGB = { red: 0, green: 0, blue: 0 };
+
+    rgbObj.forEach(([key, value]) => {
+      if (MAX.name === key) {
+        Object.defineProperty(obj, key, { value });
+      } else {
+        if (i === 1 || value + pIncrement > MAX.value) {
+          Object.defineProperty(obj, key, { value: MAX.value });
+        } else if (i > 1) {
+          Object.defineProperty(obj, key, { value: value + pIncrement });
+        }
+      }
+    });
+    objSet.add(obj);
+  }
+  const arr: Array<RGB> = [...objSet];
+
+  const hexArr = arr.map((el: RGB): string => {
+    return rgbToHex(el);
+  });
+
+  return hexArr.filter((el, index) => {
+    return index === 0 || el !== hexArr[index - 1];
+  });
+}
+
 /*
   COMPLIMENTARY SCHEME BLUEPRINT
 
