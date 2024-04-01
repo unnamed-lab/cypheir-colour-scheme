@@ -1,5 +1,7 @@
+import { colourLookup } from "./colourLookup";
 import {
   analogous,
+  cmykToRGB,
   complimentary,
   getColour,
   grayscale,
@@ -7,13 +9,14 @@ import {
   hexToRGB,
   hslToRGB,
   monochrome,
+  rgbToCMYK,
   rgbToHex,
   rgbToHSL,
   sortByHue,
   tetradic,
   triadic,
 } from "./functions";
-import { HSL, RGB } from "./interfaces";
+import { CMYK, HSL, RGB } from "./interfaces";
 import {
   buildPaletteAlpha,
   buildPaletteBeta,
@@ -119,7 +122,7 @@ export class ColourScheme {
    * @returns {RGB} Output an array of the base colour monochrome.
    */
   Greyscale(steps: number = 10) {
-    return grayscale(this.colourHex)
+    return grayscale(this.colourHex);
   }
 
   /**
@@ -145,10 +148,19 @@ export class ColourScheme {
       sortByHue: function (array: Array<RGB | HSL>) {
         return sortByHue(array);
       },
+      rgbToCMYK: function (rgb: RGB) {
+        return rgbToCMYK(rgb);
+      },
+      cmykToRGB: function (cmyk: CMYK) {
+        return cmykToRGB(cmyk);
+      },
     };
   }
 }
 
+/**
+ * Generates several palettes.
+ */
 export class ColourPalette {
   private colourCode: ColourInput | undefined;
 
@@ -201,4 +213,40 @@ export class ColourPalette {
   }
 }
 
-export default { ColourScheme, ColourPalette };
+/**
+ * Look up the name of the inputted colour.
+ * @param colour: Get the colour input.
+ * @param destruct: determine whether or not to return an object.
+ * @returns Returns the name (or alternative name) of the inputted colour.
+ * @example
+ * ```js
+ * ColourLookup("#1ca7ec") // Huelveño Horizon
+ * Or
+ * ColourLookup("#1ca7ec", true).name() // Huelveño Horizon
+ * ```
+ *
+ */
+export function ColourLookup(colour: ColourInput, destruct: boolean = false) {
+  const lookup = colourLookup(colour);
+
+  if (typeof lookup === "object") {
+    const [name, alt, dist] = [lookup.name, lookup.alt, lookup.dist];
+    if (!destruct) return name;
+
+    return {
+      name: () => {
+        return name;
+      },
+      alt: () => {
+        return alt;
+      },
+      dist: () => {
+        return dist;
+      },
+    };
+  }
+
+  return lookup;
+}
+
+export default { ColourScheme, ColourPalette, ColourLookup };
