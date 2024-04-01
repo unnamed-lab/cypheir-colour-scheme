@@ -2,6 +2,7 @@ import {
   analogous,
   complimentary,
   getColour,
+  grayscale,
   hexToDec,
   hexToRGB,
   hslToRGB,
@@ -109,6 +110,16 @@ export class ColourScheme {
    */
   Tetradic(offset: number = 0, toHex: boolean = true) {
     return tetradic(hexToRGB(this.colourHex), offset, toHex);
+  }
+
+  /**
+   * Generates an array of the base colour to grayscale shades.
+   * @param {string} code - The HEX code of the base colour.
+   * @param {number} steps - The iteration steps.
+   * @returns {RGB} Output an array of the base colour monochrome.
+   */
+  Greyscale(steps: number = 10) {
+    return grayscale(this.colourHex)
   }
 
   /**
