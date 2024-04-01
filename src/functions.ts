@@ -139,7 +139,7 @@ export function hexToDec(code: string | undefined): never | number {
   @desc: Converts the decimal inputs into hexadecimal values.
 */
 export function decToHex(value: number): string {
-  return value.toString(16);
+  return value.toString(16).padStart(6, "0");
 }
 
 /**
@@ -191,7 +191,8 @@ export function rgbToHSL(rgb: RGB): HSL {
   const l = (max + min) / 2;
 
   // Hue and Saturation
-  let h: number, s: number;
+  let h: number = 0,
+    s: number = 0;
 
   if (max === min) {
     h = s = 0; //  Achromatic
@@ -256,6 +257,24 @@ export function hslToRGB(hsl: HSL): RGB {
   return output;
 }
 
+export function sortByHue(array: Array<RGB | HSL>) {
+  let hslArr = array.map((el) => {
+    let hsl;
+    if ("red" in el) {
+      hsl = rgbToHSL(el);
+    } else {
+      hsl = el;
+    }
+    return hsl;
+  });
+
+  const sortHue = hslArr.sort((a, b) => {
+    return a.hue - b.hue;
+  });
+
+  return sortHue;
+}
+
 /*
   MONOCHROME SCHEME BLUEPRINT
 
@@ -275,41 +294,114 @@ export function hslToRGB(hsl: HSL): RGB {
  * @param {number} steps - The iteration steps.
  * @returns {RGB} Output an array of the base colour monochrome.
  */
-export function monochrome(
-  code: string | undefined,
-  steps: number = 10
-): Array<RGB> {
+export function monochrome(code: string | undefined, steps: number = 10) {
   const RGB: RGB = hexToRGB(code);
-  const rgbObj = Object.entries(RGB);
-  let MAX = { name: "", value: 0 };
-  rgbObj.forEach(([key, value]) => {
-    if (MAX.value < value) {
-      MAX.name = key;
-      MAX.value = value;
+  const hsl: HSL = rgbToHSL(RGB);
+  const basePt = (hsl.saturation + hsl.lightness) / 2;
+  let incr: number = 0;
+
+  if (hsl.lightness >= 0.8 && hsl.lightness <= 1) incr = -20;
+  else if (hsl.lightness > 0.6 && hsl.lightness < 0.8) incr = -10;
+  else if (hsl.lightness >= 0.4 && hsl.lightness <= 0.6) incr = 0;
+  else if (hsl.lightness >= 0.2 && hsl.lightness < 0.4) incr = +10;
+  else if (hsl.lightness >= 0 && hsl.lightness < 0.2) incr = +20;
+
+  const midHSL: HSL = {
+    hue: hsl.hue + incr,
+    saturation: basePt,
+    lightness: basePt,
+  };
+
+  const palette: Array<string> = [];
+  const hueArr: Array<number> = [
+    around360(midHSL.hue - 20),
+    around360(midHSL.hue - 10),
+    around360(midHSL.hue),
+    around360(midHSL.hue + 10),
+    around360(midHSL.hue + 20),
+  ]; // [a, b, c, d]
+  const satArr: Array<number> = []; // [a, b, c, d, e]
+  const briArr: Array<number> = []; // [a, b, c, d, e]
+
+  monoPaletteComp(hsl.saturation, midHSL.saturation, satArr);
+  monoPaletteComp(hsl.lightness, midHSL.lightness, briArr, 70);
+
+  function monoPaletteComp(
+    baseComp: number,
+    midComp: number,
+    arr: Array<number>,
+    step: number = 100
+  ) {
+    function modEst(val: number): number {
+      const perc = step / 100;
+      const output = ((Math.abs(val) % perc) + perc) % perc;
+      if (step <= 100) return parseFloat(output.toFixed(4));
+      else return output;
     }
-  });
 
-  const objSet = new Set<RGB>();
+    // Get the saturation of the monochromes
+    if (baseComp > 0.4 && baseComp < 0.6) {
+      //  If mid value is in C
+      let d = 20;
+      arr[0] = modEst(baseComp - d * 2);
+      arr[1] = modEst(baseComp - d);
+      arr[2] = modEst(baseComp);
+      arr[3] = modEst(baseComp + d);
+      arr[4] = modEst(baseComp + d * 2);
+    } else if (baseComp > 0.2 && baseComp <= 0.4) {
+      //  If base colour is in B
+      let d = midComp - baseComp;
+      arr[0] = modEst(baseComp - d);
+      arr[1] = modEst(baseComp);
+      arr[2] = modEst(midComp);
+      arr[3] = modEst(baseComp + d);
+      arr[4] = modEst(baseComp + d * 2);
+    } else if (baseComp > 0.6 && baseComp <= 0.8) {
+      //  If base colour is in D
+      let d = baseComp - midComp;
+      arr[0] = modEst(midComp - d * 2);
+      arr[1] = modEst(midComp - d);
+      arr[2] = modEst(midComp);
+      arr[3] = modEst(baseComp);
+      arr[4] = modEst(baseComp + d);
+    } else if (baseComp >= 0 && baseComp <= 0.2) {
+      //  If base colour is in A
+      let avg = (midComp + baseComp) / 2;
+      let d = midComp - avg;
+      arr[0] = modEst(baseComp);
+      arr[1] = modEst(avg);
+      arr[2] = modEst(midComp);
+      arr[3] = modEst(midComp + d);
+      arr[4] = modEst(midComp + d * 2);
+    } else if (baseComp >= 0.8 && baseComp <= 1) {
+      //  If base colour is in D
+      let avg = (midComp + baseComp) / 2;
+      let d = midComp + avg;
+      arr[0] = modEst(midComp - d * 2);
+      arr[1] = modEst(midComp - d);
+      arr[2] = modEst(midComp);
+      arr[3] = modEst(avg);
+      arr[4] = modEst(baseComp);
+    }
 
-  for (let i = 10; i >= 1; i--) {
-    const pIncrement = Math.ceil((((10 - i) * steps) / 100) * MAX.value);
-    let obj: RGB = { red: 0, green: 0, blue: 0 };
-
-    rgbObj.forEach(([key, value]) => {
-      if (MAX.name === key) {
-        Object.defineProperty(obj, key, { value });
-      } else {
-        if (i === 1 || value + pIncrement > MAX.value) {
-          Object.defineProperty(obj, key, { value: MAX.value });
-        } else if (i > 1) {
-          Object.defineProperty(obj, key, { value: value + pIncrement });
-        }
-      }
-    });
-    objSet.add(obj);
+    return arr;
   }
-  const arr: Array<RGB> = [...objSet];
-  return arr;
+
+  function around360(val: number) {
+    const output = ((val % 360) + 360) % 360;
+    return output;
+  }
+
+  for (let index = 0; index < 5; index++) {
+    const obj: HSL = {
+      hue: hueArr[index],
+      saturation: satArr[index],
+      lightness: briArr[index],
+    };
+    palette.push(rgbToHex(hslToRGB(obj)));
+  }
+
+  return palette;
 }
 
 /*
@@ -329,7 +421,7 @@ export function monochrome(
  * @param {RGB} colour - Get the RGB colour.
  * @param {number | Array<number>} variation - 1 = 180deg, 2 = [150deg, 210deg], [number] = [90, 120, 270].
  * @param {boolean} toHex - to convert the output to HEX.
- * @returns {RGB | Array<number>} The RGB values of the complimentary colours.
+ * @returns {string | RGB | Array<RGB | number>} The RGB values of the complimentary colours.
  */
 export function complimentary(
   colour: RGB,
@@ -487,7 +579,6 @@ export function triadic(
   }
 }
 
-
 /*
   TETRADIC SCHEME BLUEPRINT
 
@@ -509,13 +600,13 @@ export function triadic(
  */
 export function tetradic(
   colour: RGB,
-  offset: number  = 0,
+  offset: number = 0,
   toHex: boolean = true
 ) {
   const hsl = rgbToHSL(colour);
   const angle = [60, 180, 240];
 
-  const output: Array<RGB | string> = angle.map((el, index) => {
+  const output: Array<RGB | string> = angle.map((el) => {
     const cHue = (hsl.hue + (el + offset)) % 360;
     const nHSL = hslToRGB({
       hue: cHue,

@@ -8,6 +8,7 @@ import {
   monochrome,
   rgbToHex,
   rgbToHSL,
+  sortByHue,
   tetradic,
   triadic,
 } from "./functions";
@@ -16,6 +17,9 @@ import {
   buildPaletteAlpha,
   buildPaletteBeta,
   buildPaletteGamma,
+  buildProPalette,
+  buildProPaletteBeta,
+  buildProPaletteMix,
   generateRandomColour,
 } from "./palette";
 import { ColourInput } from "./types";
@@ -53,11 +57,7 @@ export class ColourScheme {
    * @returns Returns an array of the base colour monochrome
    */
   Monochrome(): Array<string> {
-    const monoArr: Array<RGB> = monochrome(this.colourHex);
-
-    const hexArr = monoArr.map((el: RGB): string => {
-      return rgbToHex(el);
-    });
+    const hexArr = monochrome(this.colourHex);
     return hexArr.filter((el, index) => {
       return index === 0 || el !== hexArr[index - 1];
     });
@@ -131,6 +131,9 @@ export class ColourScheme {
       hslToRGB: function (hsl: HSL) {
         return hslToRGB(hsl);
       },
+      sortByHue: function (array: Array<RGB | HSL>) {
+        return sortByHue(array);
+      },
     };
   }
 }
@@ -150,20 +153,39 @@ export class ColourPalette {
     return this.colourCode;
   }
 
-  paletteAplha() {
+  paletteAplha(offset: number = 0) {
     if (typeof this.colourCode !== "undefined")
-      return buildPaletteAlpha(this.colourCode);
+      return buildPaletteAlpha(this.colourCode, true, offset);
     throw new Error("Invalid colour!");
   }
 
-  paletteBeta() {
+  paletteBeta(offset: number = 0) {
     if (typeof this.colourCode !== "undefined")
-      return buildPaletteBeta(this.colourCode);
+      return buildPaletteBeta(this.colourCode, offset);
     throw new Error("Invalid colour!");
   }
-  paletteGamma() {
+
+  paletteGamma(offset: number = 0) {
     if (typeof this.colourCode !== "undefined")
-      return buildPaletteGamma(this.colourCode);
+      return buildPaletteGamma(this.colourCode, offset);
+    throw new Error("Invalid colour!");
+  }
+
+  paletteProAlpha() {
+    if (typeof this.colourCode !== "undefined")
+      return buildProPalette(this.colourCode);
+    throw new Error("Invalid colour!");
+  }
+
+  paletteProBeta() {
+    if (typeof this.colourCode !== "undefined")
+      return buildProPaletteBeta(this.colourCode);
+    throw new Error("Invalid colour!");
+  }
+
+  paletteProMix() {
+    if (typeof this.colourCode !== "undefined")
+      return buildProPaletteMix(this.colourCode);
     throw new Error("Invalid colour!");
   }
 }
